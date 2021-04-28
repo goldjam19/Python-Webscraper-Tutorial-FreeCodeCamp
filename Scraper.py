@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
+#site I want to access
 baseurl = "https://www.thewhiskyexchange.com"
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
@@ -16,12 +17,13 @@ for x in range(1,6):
     soup=BeautifulSoup(k,'html.parser')
     productlist = soup.find_all("li",{"class":"product-grid__item"})
 
-
+    # adds each products link to the list of links
     for product in productlist:
         link = product.find("a",{"class":"product-card"}).get('href')
         productlinks.append(baseurl + link)
 
 
+# adds each product to the dictionary of whiskey's using their name, price, rating, and about sections.
 for link in productlinks:
     f = requests.get(link,headers=headers).text
     hun=BeautifulSoup(f,'html.parser')
@@ -50,6 +52,7 @@ for link in productlinks:
 
     data.append(whisky)
     c=c+1
+    # prints each whiskey and its respective information after pulling it from the site and adding it to the dictionary
     print(str(c) + ".", whisky["name"] + ":", "        ", whisky["price"])
 
 df = pd.DataFrame(data)
